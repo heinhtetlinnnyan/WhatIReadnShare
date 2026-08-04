@@ -1,1 +1,66 @@
-https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pubhtml?gid=910367330&single=true
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What I Read & Think</title>
+  <style>
+    /* Basic reset and clean styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f6f8fa;
+      color: #24292e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    p {
+      color: #586069;
+      font-size: 0.95rem;
+    }
+    .sheet-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      height: 80vh;
+      background: #ffffff;
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📚 What I Read & Think</h1>
+    <p>A live view of my book notes and reading logs directly from Google Sheets.</p>
+  </header>
+
+  <div class="sheet-wrapper">
+    <!-- Replace the URL inside src="..." below with your Google Sheet's "Publish to web" link -->
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pubhtml?gid=910367330&single=true"></iframe>
+  </div>
+
+</body>
+</html>
