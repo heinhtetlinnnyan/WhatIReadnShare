@@ -1,664 +1,566 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ဖတ်ဖူးတဲ့ စာအုပ်များ</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Myanmar:wght@400;500;600&family=Noto+Sans+Myanmar:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ဖတ်ဖူးတဲ့ စာအုပ်များ</title>
+
+<style>
+  /* ---------- font ---------- */
+  @font-face {
+    font-family: 'Myanmar Sagar';
+    src: url('MyanmarSagar.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* ---------- tokens ---------- */
+  :root {
+    --paper:    #f1efe9;
+    --ink:      #3b3833;
+    --muted:    #8b8578;
+    --rule:     #e2ded4;
+    --accent:   #55665f;
+    --shell:    #e7e3d9;
+
+    --col-margin: 116px;   /* left margin column that holds the date */
+    --gap:        28px;
+  }
+
+  @media (prefers-color-scheme: dark) {
     :root {
-      --paper:      #f6f3ec;
-      --paper-dim:  #efebe0;
-      --ink:        #2b2822;
-      --ink-soft:   #8b8375;
-      --rule:       #ddd6c5;
-      --accent:     #4b5d47;   /* moss — primary accent */
-      --accent-2:   #5a6b78;   /* dusty blue */
-      --accent-3:   #6d4d49;   /* muted burgundy */
+      --paper:  #1a1917;
+      --ink:    #d4cec2;
+      --muted:  #857f74;
+      --rule:   #2e2c28;
+      --accent: #92a89d;
+      --shell:  #26241f;
     }
+  }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Noto Sans Myanmar', sans-serif;
-      font-weight: 300;
-      font-size: 17px;
-      line-height: 1.9;
-      min-height: 100vh;
-      padding: 72px 24px 96px;
-    }
+  html { -webkit-text-size-adjust: 100%; }
 
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-    }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Myanmar Sagar', 'Noto Sans Myanmar', 'Padauk', sans-serif;
+    font-size: 17.5px;
+    line-height: 2;
+    letter-spacing: 0.005em;
+    padding: 84px 28px 120px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
-    /* ---- Header ---- */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 24px;
-      margin-bottom: 8px;
-      padding-bottom: 28px;
-      border-bottom: 1px solid var(--rule);
-    }
+  .container { max-width: 860px; margin: 0 auto; }
 
-    .header-left h1 {
-      font-family: 'Noto Serif Myanmar', serif;
-      font-weight: 600;
-      font-size: 2rem;
-      color: var(--ink);
-      margin-bottom: 8px;
-    }
+  /* ---------- header ---------- */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--rule);
+  }
 
-    .header-left .subtitle {
-      color: var(--ink-soft);
-      font-size: 13.5px;
-      font-weight: 400;
-    }
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
 
-    .profile-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ink-soft);
-    }
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
 
-    .profile-pic-wrap {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 1px solid var(--rule);
-      flex-shrink: 0;
-    }
+  .who-name { font-size: 14.5px; color: var(--muted); }
 
-    .profile-pic {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--shell);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1;
+  }
 
-    /* ---- Search ---- */
-    .search-toggle {
-      display: inline-block;
-      font-size: 13.5px;
-      color: var(--ink-soft);
-      cursor: pointer;
-      margin: 22px 0 0;
-      user-select: none;
-      transition: color 0.2s;
-    }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .search-toggle::before { content: '– '; }
+  /* ---------- search ---------- */
+  .bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+  }
 
-    .search-toggle:hover { color: var(--accent); }
+  .count { font-size: 14px; color: var(--muted); }
 
-    .search-panel {
-      display: none;
-      gap: 28px;
-      margin: 18px 0 8px;
-      flex-wrap: wrap;
-      align-items: flex-end;
-    }
+  .toggle {
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 2px 0;
+    border-bottom: 1px solid transparent;
+  }
 
-    .search-panel.open { display: flex; }
+  .toggle:hover, .toggle:focus-visible { color: var(--accent); border-bottom-color: var(--accent); }
 
-    .search-field { flex: 1; min-width: 160px; }
+  .search {
+    display: none;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
 
-    .search-field input {
-      width: 100%;
-      padding: 6px 0 10px;
-      border: none;
-      border-bottom: 1px solid var(--rule);
-      background: transparent;
-      font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 16px;
-      font-weight: 300;
-      color: var(--ink);
-      outline: none;
-      transition: border-color 0.2s;
-    }
+  .search.open { display: flex; }
 
-    .search-field input::placeholder { color: var(--ink-soft); font-weight: 300; }
-    .search-field input:focus { border-color: var(--accent); }
+  .field { flex: 1 1 200px; }
 
-    .clear-btn {
-      padding: 6px 0 10px;
-      border: none;
-      border-bottom: 1px solid transparent;
-      background: transparent;
-      font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 13.5px;
-      color: var(--ink-soft);
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
+  .field input {
+    width: 100%;
+    padding: 4px 0 9px;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    background: transparent;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+  }
 
-    .clear-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .field input::placeholder { color: var(--muted); }
+  .field input:focus { border-bottom-color: var(--accent); }
 
-    .result-info {
-      font-size: 13px;
-      color: var(--ink-soft);
-      margin: 36px 0 4px;
-    }
+  .clear {
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 0 9px;
+  }
 
-    /* ---- Book Entries ---- */
-    .book-card {
-      position: relative;
-      padding: 30px 0 30px 24px;
-      border-bottom: 1px solid var(--rule);
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeUp 0.5s ease forwards;
-    }
+  .clear:hover { color: var(--accent); }
 
-    .book-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 30px;
-      bottom: 30px;
-      width: 3px;
-      background: var(--spine, var(--accent));
-      opacity: 0.55;
-      transition: opacity 0.2s;
-    }
+  /* ---------- entries ---------- */
+  .list { margin-top: 8px; }
 
-    .book-card:hover::before { opacity: 1; }
+  .entry {
+    display: grid;
+    grid-template-columns: var(--col-margin) minmax(0, 1fr);
+    gap: var(--gap);
+    padding: 34px 0;
+    border-bottom: 1px solid var(--rule);
+  }
 
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
+  .when {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 2.1;
+    padding-top: 3px;
+  }
 
-    .book-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 16px;
-      margin-bottom: 4px;
-    }
+  .title {
+    font-size: 1.28rem;
+    line-height: 1.7;
+    margin-bottom: 2px;
+  }
 
-    .book-title {
-      font-family: 'Noto Serif Myanmar', serif;
-      font-weight: 600;
-      font-size: 1.35rem;
-      color: var(--ink);
-      line-height: 1.5;
-    }
+  .writer {
+    font-size: 15.5px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
 
-    .book-date {
-      font-size: 12.5px;
-      color: var(--ink-soft);
-      font-weight: 400;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+  .meta { font-size: 15px; color: var(--muted); }
 
-    .book-writer {
-      font-family: 'Noto Serif Myanmar', serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 15.5px;
-      color: var(--spine, var(--accent));
-      margin-bottom: 14px;
-    }
+  .meta div { display: flex; gap: 8px; }
 
-    .book-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
+  .meta b { font-weight: 400; color: var(--muted); flex-shrink: 0; }
 
-    .meta-row {
-      display: flex;
-      gap: 10px;
-    }
+  .meta span { color: var(--ink); }
 
-    .meta-label {
-      color: var(--ink-soft);
-      font-weight: 400;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+  .note {
+    margin-top: 18px;
+    padding-left: 18px;
+    border-left: 1px solid var(--rule);
+    font-size: 16.5px;
+    line-height: 2.05;
+    white-space: pre-line;
+  }
 
-    .meta-label::after { content: '— '; }
+  .note-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
 
-    .meta-value {
-      color: var(--ink);
-      font-weight: 300;
-    }
+  /* ---------- states ---------- */
+  .state {
+    padding: 64px 0;
+    color: var(--muted);
+    font-size: 15.5px;
+  }
 
-    .book-comment {
-      margin-top: 18px;
-      padding-left: 16px;
-      border-left: 1px solid var(--rule);
-      font-size: 16px;
-      font-weight: 300;
-      color: var(--ink);
-      line-height: 1.95;
-    }
+  .state small { display: block; margin-top: 8px; opacity: 0.7; font-size: 13px; }
 
-    .book-comment-label {
-      font-size: 12.5px;
-      color: var(--ink-soft);
-      margin-bottom: 6px;
-      font-weight: 400;
-    }
+  /* ---------- pagination ---------- */
+  .pages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 44px;
+    flex-wrap: wrap;
+  }
 
-    .no-data {
-      padding: 56px 0;
-      text-align: center;
-      color: var(--ink-soft);
-      font-weight: 300;
-      font-size: 15px;
-    }
+  .page {
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 15px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 2px 0;
+    border-bottom: 1px solid transparent;
+    min-width: 18px;
+  }
 
-    /* ---- Pagination ---- */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 22px;
-      margin-top: 48px;
-      flex-wrap: wrap;
-    }
+  .page:hover:not(:disabled) { color: var(--accent); }
+  .page.on { color: var(--ink); border-bottom-color: var(--accent); }
+  .page:disabled { opacity: 0.28; cursor: default; }
 
-    .page-btn {
-      min-width: 20px;
-      background: none;
-      border: none;
-      font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--ink-soft);
-      cursor: pointer;
-      padding: 2px 0;
-      border-bottom: 1px solid transparent;
-      transition: all 0.2s;
-    }
+  .dots { color: var(--muted); }
 
-    .page-btn:hover:not(:disabled) { color: var(--accent); }
+  .page-note {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
 
-    .page-btn.active {
-      color: var(--ink);
-      font-weight: 500;
-      border-color: var(--accent);
-    }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-    .page-btn:disabled { opacity: 0.3; cursor: default; }
-
-    .page-info {
-      font-size: 12px;
-      color: var(--ink-soft);
-      text-align: center;
-      margin-top: 14px;
-    }
-
-    .status {
-      padding: 48px 0;
-      color: var(--ink-soft);
-      font-weight: 300;
-      text-align: center;
-      font-size: 15px;
-    }
-
-    .status.error { color: var(--accent-3); text-align: left; }
-
-    @media (max-width: 540px) {
-      body { padding: 40px 18px 64px; }
-      .book-card { padding: 24px 0 24px 18px; }
-      .header-left h1 { font-size: 1.55rem; }
-      header { align-items: flex-start; flex-direction: column; gap: 16px; }
-      .book-head { flex-direction: column; gap: 4px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .book-card { animation: none; opacity: 1; transform: none; }
-    }
-  </style>
+  @media (max-width: 620px) {
+    body { padding: 44px 20px 72px; font-size: 17px; }
+    header { flex-direction: column; align-items: flex-start; gap: 18px; }
+    h1 { font-size: 1.45rem; }
+    .entry { grid-template-columns: 1fr; gap: 6px; padding: 28px 0; }
+    .when { padding-top: 0; }
+  }
+</style>
 </head>
 <body>
-  <div class="container">
+<div class="container">
 
-    <header>
-      <div class="header-left">
-        <h1>ဖတ်ဖူးတဲ့ စာအုပ်များ</h1>
-        <p class="subtitle">Google Sheet မှ တိုက်ရိုက် ယူထားသော စာအုပ်မှတ်တမ်း</p>
-      </div>
-      <div class="header-right">
-        <span class="profile-name">ဟိန်းထက်</span>
-        <div class="profile-pic-wrap">
-          <img class="profile-pic" src="profile.png" alt="ဟိန်းထက်"
-               onerror="this.parentElement.style.display='none'">
-        </div>
-      </div>
-    </header>
-
-    <span class="search-toggle" id="searchToggle">ရှာရန်</span>
-
-    <div class="search-panel" id="searchPanel">
-      <div class="search-field">
-        <input type="text" id="searchBook" placeholder="စာအုပ်နာမည်">
-      </div>
-      <div class="search-field">
-        <input type="text" id="searchWriter" placeholder="စာရေးသူ">
-      </div>
-      <button class="clear-btn" id="clearBtn">ဖျက်</button>
+  <header>
+    <div>
+      <h1>ဖတ်ဖူးတဲ့ စာအုပ်များ</h1>
+      <p class="subtitle">Google Sheet မှ တိုက်ရိုက် ယူထားသော စာအုပ်မှတ်တမ်း</p>
     </div>
+    <div class="who">
+      <span class="who-name">ဟိန်းထက်</span>
+      <div class="avatar" id="avatar">
+        <img src="profile.png" alt="ဟိန်းထက်"
+             onerror="document.getElementById('avatar').textContent='ဟ'">
+      </div>
+    </div>
+  </header>
 
-    <div class="result-info" id="resultInfo"></div>
-    <div id="output" class="status">ခဏစောင့်ပါ...</div>
-    <div id="pagination"></div>
+  <div class="bar">
+    <span class="count" id="count"></span>
+    <button class="toggle" id="toggle">ရှာရန်</button>
   </div>
 
-  <script>
-    const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pub?gid=910367330&single=true&output=csv';
-    const PER_PAGE   = 5;
-    const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
+  <div class="search" id="search">
+    <div class="field"><input type="text" id="qBook" placeholder="စာအုပ်နာမည်"></div>
+    <div class="field"><input type="text" id="qWriter" placeholder="စာရေးသူ"></div>
+    <button class="clear" id="clear">ဖျက်</button>
+  </div>
 
-    const COL_EMAIL       = 1;
-    const COL_BOOK        = 2;
-    const COL_WRITER      = 3;
-    const COL_TRANS_FROM  = 4;
-    const COL_ORIG_BOOK   = 5;
-    const COL_ORIG_WRITER = 6;
-    const COL_DATE        = 9;
-    const COL_COMMENT     = 10;
-    const COL_MONTH       = 11;
-    const COL_YEAR        = 12;
+  <div class="list" id="list"><p class="state">ခဏစောင့်ပါ…</p></div>
+  <div id="pages"></div>
+</div>
 
-    // Muted "book cloth" palette — the spine color rotates through these
-    const SPINES = ['#4b5d47', '#5a6b78', '#6d4d49'];
+<script>
+  const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pub?gid=910367330&single=true&output=csv';
+  const PER_PAGE   = 5;
+  const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
 
-    const MONTHS_MY = [
-      'ဇန်နဝါရီ',   'ဖေဖော်ဝါရီ', 'မတ်',
-      'ဧပြီ',       'မေ',          'ဇွန်',
-      'ဇူလိုင်',    'ဩဂုတ်',       'စက်တင်ဘာ',
-      'အောက်တိုဘာ', 'နိုဝင်ဘာ',    'ဒီဇင်ဘာ'
-    ];
+  const COL_EMAIL = 1, COL_BOOK = 2, COL_WRITER = 3, COL_TRANS_FROM = 4,
+        COL_ORIG_BOOK = 5, COL_ORIG_WRITER = 6, COL_DATE = 9,
+        COL_COMMENT = 10, COL_MONTH = 11, COL_YEAR = 12;
 
-    const MONTH_EN = [
-      'january','february','march','april','may','june',
-      'july','august','september','october','november','december',
-      'jan','feb','mar','apr','may','jun',
-      'jul','aug','sep','oct','nov','dec'
-    ];
+  const MONTHS_MY = ['ဇန်နဝါရီ','ဖေဖော်ဝါရီ','မတ်','ဧပြီ','မေ','ဇွန်',
+                     'ဇူလိုင်','ဩဂုတ်','စက်တင်ဘာ','အောက်တိုဘာ','နိုဝင်ဘာ','ဒီဇင်ဘာ'];
 
-    let allBooks    = [];
-    let filtered    = [];
-    let currentPage = 1;
+  const MONTH_EN = ['january','february','march','april','may','june',
+                    'july','august','september','october','november','december',
+                    'jan','feb','mar','apr','may','jun',
+                    'jul','aug','sep','oct','nov','dec'];
 
-    const output       = document.getElementById('output');
-    const paginationEl = document.getElementById('pagination');
-    const resultInfo   = document.getElementById('resultInfo');
-    const searchPanel  = document.getElementById('searchPanel');
-    const searchToggle = document.getElementById('searchToggle');
-    const searchBook   = document.getElementById('searchBook');
-    const searchWriter = document.getElementById('searchWriter');
-    const clearBtn     = document.getElementById('clearBtn');
+  let allBooks = [], filtered = [], currentPage = 1;
 
-    searchToggle.addEventListener('click', () => {
-      searchPanel.classList.toggle('open');
-      if (searchPanel.classList.contains('open')) searchBook.focus();
-    });
+  const listEl   = document.getElementById('list');
+  const pagesEl  = document.getElementById('pages');
+  const countEl  = document.getElementById('count');
+  const searchEl = document.getElementById('search');
+  const toggleEl = document.getElementById('toggle');
+  const qBook    = document.getElementById('qBook');
+  const qWriter  = document.getElementById('qWriter');
 
-    function parseCSV(text) {
-      const rows = [];
-      let row = [], cell = '', inQ = false;
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i], next = text[i + 1];
-        if (inQ) {
-          if (ch === '"' && next === '"') { cell += '"'; i++; }
-          else if (ch === '"') inQ = false;
-          else cell += ch;
-        } else {
-          if (ch === '"') inQ = true;
-          else if (ch === ',') { row.push(cell); cell = ''; }
-          else if (ch === '\n' || (ch === '\r' && next === '\n')) {
-            row.push(cell); cell = '';
-            if (row.some(c => c !== '')) rows.push(row);
-            row = [];
-            if (ch === '\r') i++;
-          } else cell += ch;
-        }
-      }
-      row.push(cell);
-      if (row.some(c => c !== '')) rows.push(row);
-      return rows;
-    }
+  toggleEl.addEventListener('click', () => {
+    searchEl.classList.toggle('open');
+    if (searchEl.classList.contains('open')) qBook.focus();
+  });
 
-    function monthIndex(name) {
-      const n = name.toLowerCase().replace(/\./g, '');
-      const idx = MONTH_EN.indexOf(n);
-      if (idx >= 0) return idx % 12;
-      return -1;
-    }
-
-    function parseDateStr(raw) {
-      if (!raw) return null;
-      const str = raw.replace(/[\s\u00A0]+/g, ' ').trim();
-      if (!str) return null;
-
-      const cleaned = str.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
-
-      const dmy = cleaned.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
-      if (dmy) {
-        const m = monthIndex(dmy[2]);
-        if (m >= 0) return { month: MONTHS_MY[m], year: parseInt(dmy[3], 10) };
-      }
-
-      const mdy = cleaned.match(/^([a-zA-Z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
-      if (mdy) {
-        const m = monthIndex(mdy[1]);
-        if (m >= 0) return { month: MONTHS_MY[m], year: parseInt(mdy[3], 10) };
-      }
-
-      const slash = cleaned.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
-      if (slash) {
-        const a = parseInt(slash[1], 10);
-        const b = parseInt(slash[2], 10);
-        const year = parseInt(slash[3], 10);
-        if (a > 12 && b >= 1 && b <= 12) return { month: MONTHS_MY[b - 1], year };
-        if (a >= 1 && a <= 12) return { month: MONTHS_MY[a - 1], year };
-      }
-
-      const iso = cleaned.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-      if (iso) return { month: MONTHS_MY[parseInt(iso[2], 10) - 1], year: parseInt(iso[1], 10) };
-
-      const d = new Date(cleaned);
-      if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
-        return { month: MONTHS_MY[d.getMonth()], year: d.getFullYear() };
-      }
-
-      return null;
-    }
-
-    function getDate(r) {
-      let m = (r[COL_MONTH] || '').trim();
-      let y = (r[COL_YEAR]  || '').trim();
-      let monthIdx = -1;
-      let yearNum = 0;
-
-      if (m) {
-        monthIdx = monthIndex(m);
-        if (monthIdx < 0) { const n = parseInt(m, 10); if (n >= 1 && n <= 12) monthIdx = n - 1; }
-        if (monthIdx < 0) { const myIdx = MONTHS_MY.indexOf(m); if (myIdx >= 0) monthIdx = myIdx; }
-      }
-      if (y) { yearNum = parseInt(y, 10); if (isNaN(yearNum)) yearNum = 0; }
-
-      if (monthIdx >= 0 && yearNum > 2000) return { month: MONTHS_MY[monthIdx], year: yearNum };
-
-      return parseDateStr(r[COL_DATE]);
-    }
-
-    async function loadData() {
-      try {
-        const res  = await fetch(CSV_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const text = await res.text();
-        const rows = parseCSV(text).slice(1);
-
-        if (!rows.length) {
-          output.innerHTML = '<p class="no-data">ဒေတာ မရှိသေးပါ</p>';
-          return;
-        }
-
-        allBooks = rows.map(r => {
-          const email = (r[COL_EMAIL] || '').trim().toLowerCase();
-          const book  = (r[COL_BOOK]  || '').trim();
-          if (email !== ONLY_EMAIL || !book) return null;
-          const dt = getDate(r);
-          return {
-            book,
-            writer:     (r[COL_WRITER]      || '').trim(),
-            transFrom:  (r[COL_TRANS_FROM]  || '').trim(),
-            origBook:   (r[COL_ORIG_BOOK]   || '').trim(),
-            origWriter: (r[COL_ORIG_WRITER] || '').trim(),
-            comment:    (r[COL_COMMENT]     || '').trim(),
-            month: dt ? dt.month : '',
-            year:  dt ? dt.year  : '',
-          };
-        }).filter(Boolean).reverse();
-
-        filtered = [...allBooks];
-        currentPage = 1;
-        render();
-
-      } catch (err) {
-        output.className = 'status error';
-        output.innerHTML = 'ဒေတာ ခေါ်မရပါ။ Sheet ကို Publish လုပ်ထားပြီးဖြစ်ကြောင်း စစ်ပါ။'
-          + `<br><small style="opacity:0.6">${esc(err.message)}</small>`;
+  function parseCSV(text) {
+    const rows = [];
+    let row = [], cell = '', inQ = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i], next = text[i + 1];
+      if (inQ) {
+        if (ch === '"' && next === '"') { cell += '"'; i++; }
+        else if (ch === '"') inQ = false;
+        else cell += ch;
+      } else {
+        if (ch === '"') inQ = true;
+        else if (ch === ',') { row.push(cell); cell = ''; }
+        else if (ch === '\n' || (ch === '\r' && next === '\n')) {
+          row.push(cell); cell = '';
+          if (row.some(c => c !== '')) rows.push(row);
+          row = [];
+          if (ch === '\r') i++;
+        } else cell += ch;
       }
     }
+    row.push(cell);
+    if (row.some(c => c !== '')) rows.push(row);
+    return rows;
+  }
 
-    function render() {
-      const total = filtered.length;
-      const totalPages = Math.ceil(total / PER_PAGE);
-      if (currentPage > totalPages) currentPage = totalPages || 1;
+  function monthIndex(name) {
+    const idx = MONTH_EN.indexOf(name.toLowerCase().replace(/\./g, ''));
+    return idx >= 0 ? idx % 12 : -1;
+  }
 
-      const page = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+  function parseDateStr(raw) {
+    if (!raw) return null;
+    const str = raw.replace(/[\s\u00A0]+/g, ' ').trim();
+    if (!str) return null;
+    const cleaned = str.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
 
-      if (!total) {
-        output.innerHTML = '<p class="no-data">ကိုက်ညီသော စာအုပ် မတွေ့ပါ</p>';
-        paginationEl.innerHTML = '';
-        resultInfo.textContent = '';
+    const dmy = cleaned.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
+    if (dmy) {
+      const m = monthIndex(dmy[2]);
+      if (m >= 0) return { month: MONTHS_MY[m], year: +dmy[3] };
+    }
+
+    const mdy = cleaned.match(/^([a-zA-Z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+    if (mdy) {
+      const m = monthIndex(mdy[1]);
+      if (m >= 0) return { month: MONTHS_MY[m], year: +mdy[3] };
+    }
+
+    const slash = cleaned.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+    if (slash) {
+      const a = +slash[1], b = +slash[2], year = +slash[3];
+      if (a > 12 && b >= 1 && b <= 12) return { month: MONTHS_MY[b - 1], year };
+      if (a >= 1 && a <= 12) return { month: MONTHS_MY[a - 1], year };
+    }
+
+    const iso = cleaned.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (iso) return { month: MONTHS_MY[+iso[2] - 1], year: +iso[1] };
+
+    const d = new Date(cleaned);
+    if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
+      return { month: MONTHS_MY[d.getMonth()], year: d.getFullYear() };
+    }
+    return null;
+  }
+
+  function getDate(r) {
+    const m = (r[COL_MONTH] || '').trim();
+    const y = (r[COL_YEAR] || '').trim();
+    let mi = -1, yr = 0;
+
+    if (m) {
+      mi = monthIndex(m);
+      if (mi < 0) { const n = parseInt(m, 10); if (n >= 1 && n <= 12) mi = n - 1; }
+      if (mi < 0) { const j = MONTHS_MY.indexOf(m); if (j >= 0) mi = j; }
+    }
+    if (y) { yr = parseInt(y, 10) || 0; }
+    if (mi >= 0 && yr > 2000) return { month: MONTHS_MY[mi], year: yr };
+    return parseDateStr(r[COL_DATE]);
+  }
+
+  async function loadData() {
+    try {
+      const res = await fetch(CSV_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const rows = parseCSV(await res.text()).slice(1);
+
+      allBooks = rows.map(r => {
+        const email = (r[COL_EMAIL] || '').trim().toLowerCase();
+        const book  = (r[COL_BOOK] || '').trim();
+        if (email !== ONLY_EMAIL || !book) return null;
+        const dt = getDate(r);
+        return {
+          book,
+          writer:     (r[COL_WRITER] || '').trim(),
+          transFrom:  (r[COL_TRANS_FROM] || '').trim(),
+          origBook:   (r[COL_ORIG_BOOK] || '').trim(),
+          origWriter: (r[COL_ORIG_WRITER] || '').trim(),
+          comment:    (r[COL_COMMENT] || '').trim(),
+          month: dt ? dt.month : '',
+          year:  dt ? dt.year : ''
+        };
+      }).filter(Boolean).reverse();
+
+      if (!allBooks.length) {
+        listEl.innerHTML = '<p class="state">စာအုပ်မှတ်တမ်း မရှိသေးပါ</p>';
         return;
       }
 
-      resultInfo.textContent = (searchBook.value || searchWriter.value)
-        ? `တွေ့ရှိသည် — ${total} အုပ်`
-        : `စုစုပေါင်း ${total} အုပ်`;
-
-      let html = '';
-      page.forEach((b, i) => {
-        const spineIdx = ((currentPage - 1) * PER_PAGE + i) % SPINES.length;
-        const spine = SPINES[spineIdx];
-        html += `<div class="book-card" style="--spine:${spine}; animation-delay:${i * 0.06}s">`;
-        html += `<div class="book-head">`;
-        html += `<div class="book-title">${esc(b.book)}</div>`;
-        if (b.month || b.year) {
-          html += `<div class="book-date">${[b.month, b.year].filter(Boolean).join(' ')}</div>`;
-        }
-        html += `</div>`;
-        html += `<div class="book-writer">${esc(b.writer)}</div>`;
-
-        const meta = [];
-        if (b.transFrom)  meta.push(['ဘာသာပြန်', b.transFrom]);
-        if (b.origBook)   meta.push(['မူရင်းစာအုပ်', b.origBook]);
-        if (b.origWriter) meta.push(['မူရင်းစာရေးသူ', b.origWriter]);
-        if (meta.length) {
-          html += '<div class="book-meta">';
-          meta.forEach(([l, v]) => {
-            html += `<div class="meta-row"><span class="meta-label">${esc(l)}</span><span class="meta-value">${esc(v)}</span></div>`;
-          });
-          html += '</div>';
-        }
-
-        if (b.comment) {
-          html += '<div class="book-comment">'
-            + '<div class="book-comment-label">စာအုပ်ဖတ်ပြီးတွေးမိတာ</div>'
-            + esc(b.comment) + '</div>';
-        }
-        html += '</div>';
-      });
-
-      output.innerHTML = html;
-      renderPagination(totalPages);
-    }
-
-    function renderPagination(totalPages) {
-      if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
-      let h = '<div class="pagination">';
-      h += pBtn('←', currentPage - 1, currentPage === 1);
-      getPages(currentPage, totalPages).forEach(p => {
-        h += p === '...'
-          ? '<span style="color:var(--ink-soft);padding:0 4px">…</span>'
-          : `<button class="page-btn${p === currentPage ? ' active' : ''}" onclick="goPage(${p})">${p}</button>`;
-      });
-      h += pBtn('→', currentPage + 1, currentPage === totalPages);
-      h += `</div><div class="page-info">စာမျက်နှာ ${currentPage} / ${totalPages}</div>`;
-      paginationEl.innerHTML = h;
-    }
-
-    function pBtn(l, p, d) {
-      return `<button class="page-btn" onclick="goPage(${p})" ${d ? 'disabled' : ''}>${l}</button>`;
-    }
-
-    function getPages(c, t) {
-      if (t <= 7) return Array.from({ length: t }, (_, i) => i + 1);
-      const p = [1];
-      if (c > 3) p.push('...');
-      for (let i = Math.max(2, c - 1); i <= Math.min(t - 1, c + 1); i++) p.push(i);
-      if (c < t - 2) p.push('...');
-      p.push(t);
-      return p;
-    }
-
-    function goPage(n) {
-      currentPage = n;
-      render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function filterBooks() {
-      const bq = searchBook.value.trim().toLowerCase();
-      const wq = searchWriter.value.trim().toLowerCase();
-      filtered = allBooks.filter(b =>
-        (!bq || b.book.toLowerCase().includes(bq)) &&
-        (!wq || b.writer.toLowerCase().includes(wq)));
+      filtered = [...allBooks];
       currentPage = 1;
       render();
+    } catch (err) {
+      listEl.innerHTML = '<p class="state">ဒေတာ ခေါ်မရပါ။ Sheet ကို Publish လုပ်ထားခြင်း ရှိ၊ မရှိ စစ်ပါ။'
+        + '<small>' + esc(err.message) + '</small></p>';
+    }
+  }
+
+  function render() {
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / PER_PAGE);
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+
+    if (!total) {
+      listEl.innerHTML = '<p class="state">ကိုက်ညီသော စာအုပ် မတွေ့ပါ</p>';
+      pagesEl.innerHTML = '';
+      countEl.textContent = '';
+      return;
     }
 
-    searchBook.addEventListener('input', filterBooks);
-    searchWriter.addEventListener('input', filterBooks);
-    clearBtn.addEventListener('click', () => {
-      searchBook.value = '';
-      searchWriter.value = '';
-      filterBooks();
-    });
+    const searching = qBook.value || qWriter.value;
+    countEl.textContent = searching ? `တွေ့ရှိသည် — ${total} အုပ်` : `စုစုပေါင်း ${total} အုပ်`;
 
-    function esc(s) {
-      const d = document.createElement('div');
-      d.textContent = s;
-      return d.innerHTML;
-    }
+    const page = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
-    loadData();
-  </script>
+    listEl.innerHTML = page.map(b => {
+      const when = [b.month, b.year].filter(Boolean).join(' ');
+
+      const meta = [];
+      if (b.transFrom)  meta.push(['ဘာသာပြန်', b.transFrom]);
+      if (b.origBook)   meta.push(['မူရင်းစာအုပ်', b.origBook]);
+      if (b.origWriter) meta.push(['မူရင်းစာရေးသူ', b.origWriter]);
+
+      return '<article class="entry">'
+        + `<div class="when">${esc(when)}</div>`
+        + '<div>'
+        +   `<h2 class="title">${esc(b.book)}</h2>`
+        +   (b.writer ? `<p class="writer">${esc(b.writer)}</p>` : '')
+        +   (meta.length
+              ? '<div class="meta">' + meta.map(([l, v]) =>
+                  `<div><b>${esc(l)}</b><span>${esc(v)}</span></div>`).join('') + '</div>'
+              : '')
+        +   (b.comment
+              ? '<div class="note"><div class="note-label">စာအုပ်ဖတ်ပြီးတွေးမိတာ</div>'
+                + esc(b.comment) + '</div>'
+              : '')
+        + '</div></article>';
+    }).join('');
+
+    renderPages(totalPages);
+  }
+
+  function renderPages(totalPages) {
+    if (totalPages <= 1) { pagesEl.innerHTML = ''; return; }
+
+    const nums = pageNumbers(currentPage, totalPages).map(p =>
+      p === '…'
+        ? '<span class="dots">…</span>'
+        : `<button class="page${p === currentPage ? ' on' : ''}" onclick="goPage(${p})">${p}</button>`
+    ).join('');
+
+    pagesEl.innerHTML = '<nav class="pages">'
+      + `<button class="page" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>←</button>`
+      + nums
+      + `<button class="page" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`
+      + '</nav>'
+      + `<p class="page-note">စာမျက်နှာ ${currentPage} / ${totalPages}</p>`;
+  }
+
+  function pageNumbers(c, t) {
+    if (t <= 7) return Array.from({ length: t }, (_, i) => i + 1);
+    const p = [1];
+    if (c > 3) p.push('…');
+    for (let i = Math.max(2, c - 1); i <= Math.min(t - 1, c + 1); i++) p.push(i);
+    if (c < t - 2) p.push('…');
+    p.push(t);
+    return p;
+  }
+
+  function goPage(n) {
+    currentPage = n;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function filterBooks() {
+    const bq = qBook.value.trim().toLowerCase();
+    const wq = qWriter.value.trim().toLowerCase();
+    filtered = allBooks.filter(b =>
+      (!bq || b.book.toLowerCase().includes(bq)) &&
+      (!wq || b.writer.toLowerCase().includes(wq)));
+    currentPage = 1;
+    render();
+  }
+
+  qBook.addEventListener('input', filterBooks);
+  qWriter.addEventListener('input', filterBooks);
+  document.getElementById('clear').addEventListener('click', () => {
+    qBook.value = '';
+    qWriter.value = '';
+    filterBooks();
+  });
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  loadData();
+</script>
 </body>
 </html>
