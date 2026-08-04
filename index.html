@@ -28,10 +28,7 @@
       padding: 48px 20px 60px;
     }
 
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-    }
+    .container { max-width: 700px; margin: 0 auto; }
 
     /* ---- Header ---- */
     header {
@@ -296,7 +293,6 @@
 <body>
   <div class="container">
 
-    <!-- Header: title left, pic + name right -->
     <header>
       <div class="header-left">
         <h1>ဖတ်ဖူးတဲ့ စာအုပ်များ</h1>
@@ -329,21 +325,21 @@
   </div>
 
   <script>
-    // ============================================================
-    //  CONFIG
-    // ============================================================
     const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pub?gid=910367330&single=true&output=csv';
     const PER_PAGE   = 5;
     const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
 
+    // Column indices
     const COL_EMAIL       = 1;
     const COL_BOOK        = 2;
     const COL_WRITER      = 3;
     const COL_TRANS_FROM  = 4;
     const COL_ORIG_BOOK   = 5;
     const COL_ORIG_WRITER = 6;
-    const COL_DATE        = 9;
+    const COL_DATE        = 9;   // ဘယ်နေ့ကဖတ်ပြီးတာလဲ
     const COL_COMMENT     = 10;
+    const COL_MONTH       = 11;  // Month column (backup)
+    const COL_YEAR        = 12;  // Year column (backup)
 
     const MONTHS_MY = [
       'ဇန်နဝါရီ',   'ဖေဖော်ဝါရီ', 'မတ်',
@@ -352,7 +348,13 @@
       'အောက်တိုဘာ', 'နိုဝင်ဘာ',    'ဒီဇင်ဘာ'
     ];
 
-    // ============================================================
+    const MONTH_EN = [
+      'january','february','march','april','may','june',
+      'july','august','september','october','november','december',
+      // abbreviations
+      'jan','feb','mar','apr','may','jun',
+      'jul','aug','sep','oct','nov','dec'
+    ];
 
     let allBooks    = [];
     let filtered    = [];
@@ -398,35 +400,106 @@
       return rows;
     }
 
-    // ---- Date parser: "DD Month YYYY" format ----
+    // ---- Month name to index (0-11) ----
+    function monthIndex(name) {
+      const n = name.toLowerCase().replace(/\./g, '');
+      const idx = MONTH_EN.indexOf(n);
+      if (idx >= 0) return idx % 12; // handle abbreviations sharing same index
+      return -1;
+    }
+
+    // ---- Robust date parser ----
     function parseDateStr(raw) {
       if (!raw) return null;
-      const str = raw.trim();
+      // Normalize: replace non-breaking spaces, trim
+      const str = raw.replace(/[\s\u00A0]+/g, ' ').trim();
       if (!str) return null;
 
-      // Strip ordinals: "4th" → "4", "1st" → "1", "2nd" → "2", "3rd" → "3"
+      // Strip ordinals: "4th" → "4", "1st" → "1"
       const cleaned = str.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
 
-      // Match: "4 August 2026" or "04 August 2026"
-      const monthNames = [
-        'january','february','march','april','may','june',
-        'july','august','september','october','november','december'
-      ];
-
-      const match = cleaned.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
-      if (match) {
-        const month = monthNames.indexOf(match[2].toLowerCase());
-        const year  = parseInt(match[3], 10);
-        if (month >= 0) return { month: MONTHS_MY[month], year };
+      // 1) "4 August 2026" or "04 Aug 2026"
+      const dmy = cleaned.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
+      if (dmy) {
+        const m = monthIndex(dmy[2]);
+        if (m >= 0) return { month: MONTHS_MY[m], year: parseInt(dmy[3], 10) };
       }
 
-      // Fallback
+      // 2) "August 4, 2026" or "Aug 4 2026"
+      const mdy = cleaned.match(/^([a-zA-Z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+      if (mdy) {
+        const m = monthIndex(mdy[1]);
+        if (m >= 0) return { month: MONTHS_MY[m], year: parseInt(mdy[3], 10) };
+      }
+
+      // 3) Slash/dash format: "8/4/2026" or "08-04-2026"
+      //    Google Sheets published CSV often uses MM/DD/YYYY
+      const slash = cleaned.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+      if (slash) {
+        const a = parseInt(slash[1], 10);
+        const b = parseInt(slash[2], 10);
+        const year = parseInt(slash[3], 10);
+        // If first number > 12, it must be DD/MM/YYYY
+        if (a > 12 && b >= 1 && b <= 12) {
+          return { month: MONTHS_MY[b - 1], year };
+        }
+        // Otherwise assume MM/DD/YYYY (Google Sheets default)
+        if (a >= 1 && a <= 12) {
+          return { month: MONTHS_MY[a - 1], year };
+        }
+      }
+
+      // 4) ISO: "2026-08-04"
+      const iso = cleaned.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if (iso) {
+        return { month: MONTHS_MY[parseInt(iso[2], 10) - 1], year: parseInt(iso[1], 10) };
+      }
+
+      // 5) Last resort: Date constructor
       const d = new Date(cleaned);
-      if (!isNaN(d.getTime())) {
+      if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
         return { month: MONTHS_MY[d.getMonth()], year: d.getFullYear() };
       }
 
       return null;
+    }
+
+    // ---- Get date from row ----
+    function getDate(r) {
+      // PRIMARY: try the explicit Month + Year columns
+      let m = (r[COL_MONTH] || '').trim();
+      let y = (r[COL_YEAR]  || '').trim();
+
+      // Parse month — could be "August", "Aug", "8", or Myanmar
+      let monthIdx = -1;
+      let yearNum = 0;
+
+      if (m) {
+        // Try as English month name
+        monthIdx = monthIndex(m);
+        // Try as number
+        if (monthIdx < 0) {
+          const n = parseInt(m, 10);
+          if (n >= 1 && n <= 12) monthIdx = n - 1;
+        }
+        // Try as Myanmar month name
+        if (monthIdx < 0) {
+          const myIdx = MONTHS_MY.indexOf(m);
+          if (myIdx >= 0) monthIdx = myIdx;
+        }
+      }
+      if (y) {
+        yearNum = parseInt(y, 10);
+        if (isNaN(yearNum)) yearNum = 0;
+      }
+
+      // If we got both month and year from explicit columns, use them
+      if (monthIdx >= 0 && yearNum > 2000) {
+        return { month: MONTHS_MY[monthIdx], year: yearNum };
+      }
+
+      // FALLBACK: parse the date column
+      return parseDateStr(r[COL_DATE]);
     }
 
     // ---- Load ----
@@ -442,11 +515,21 @@
           return;
         }
 
+        // Debug: log raw date values so you can see what the CSV actually returns
+        console.log('--- Raw date samples from CSV ---');
+        rows.slice(0, 8).forEach((r, i) => {
+          const email = (r[COL_EMAIL] || '').trim();
+          if (email.toLowerCase() === ONLY_EMAIL) {
+            console.log(`Row ${i}: dateCol="${r[COL_DATE] || ''}" | monthCol="${r[COL_MONTH] || ''}" | yearCol="${r[COL_YEAR] || ''}"`);
+          }
+        });
+
         allBooks = rows.map(r => {
           const email = (r[COL_EMAIL] || '').trim().toLowerCase();
           const book  = (r[COL_BOOK]  || '').trim();
           if (email !== ONLY_EMAIL || !book) return null;
-          const dt = parseDateStr(r[COL_DATE]);
+
+          const dt = getDate(r);
           return {
             book,
             writer:     (r[COL_WRITER]      || '').trim(),
