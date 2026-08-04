@@ -22,31 +22,34 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 15px;
-      line-height: 1.8;
+      font-size: 17px;
+      line-height: 1.85;
       min-height: 100vh;
-      padding: 48px 20px 60px;
+      padding: 56px 24px 80px;
     }
 
-    .container { max-width: 700px; margin: 0 auto; }
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+    }
 
     /* ---- Header ---- */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
 
     .header-left h1 {
       font-weight: 600;
-      font-size: 1.5rem;
-      margin-bottom: 2px;
+      font-size: 1.85rem;
+      margin-bottom: 4px;
     }
 
     .header-left .subtitle {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 300;
     }
 
@@ -54,15 +57,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       flex-shrink: 0;
     }
 
     .profile-pic-wrap {
-      width: 64px;
-      height: 64px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      padding: 2.5px;
+      padding: 3px;
       background: linear-gradient(135deg, var(--accent) 0%, #e0976e 100%);
     }
 
@@ -71,12 +74,12 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      border: 2.5px solid var(--bg);
+      border: 3px solid var(--bg);
       display: block;
     }
 
     .profile-name {
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--text);
       text-align: center;
@@ -86,10 +89,10 @@
     /* ---- Search ---- */
     .search-toggle {
       display: inline-block;
-      font-size: 12px;
+      font-size: 14px;
       color: var(--muted);
       cursor: pointer;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       border-bottom: 1px dashed var(--muted);
       line-height: 1.4;
       transition: color 0.2s;
@@ -100,22 +103,22 @@
 
     .search-panel {
       display: none;
-      gap: 10px;
-      margin-bottom: 28px;
+      gap: 12px;
+      margin-bottom: 32px;
       flex-wrap: wrap;
     }
 
     .search-panel.open { display: flex; }
 
-    .search-field { flex: 1; min-width: 160px; }
+    .search-field { flex: 1; min-width: 180px; }
 
     .search-field input {
       width: 100%;
-      padding: 9px 12px;
+      padding: 11px 14px;
       border: 1px solid var(--border);
       background: var(--surface);
       font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       color: var(--text);
       outline: none;
       transition: border-color 0.2s;
@@ -125,11 +128,11 @@
     .search-field input:focus { border-color: var(--accent); }
 
     .clear-btn {
-      padding: 9px 16px;
+      padding: 11px 20px;
       border: 1px solid var(--border);
       background: var(--surface);
       font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 12px;
+      font-size: 14px;
       color: var(--muted);
       cursor: pointer;
       transition: all 0.2s;
@@ -138,17 +141,17 @@
     .clear-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     .result-info {
-      font-size: 12px;
+      font-size: 14px;
       color: var(--muted);
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     /* ---- Book Cards ---- */
     .book-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 28px 28px 24px;
-      margin-bottom: 20px;
+      padding: 32px 36px 28px;
+      margin-bottom: 24px;
       opacity: 0;
       transform: translateY(16px);
       animation: fadeUp 0.4s ease forwards;
@@ -166,37 +169,37 @@
 
     .book-title {
       font-weight: 600;
-      font-size: 1.25rem;
-      margin-bottom: 4px;
+      font-size: 1.45rem;
+      margin-bottom: 5px;
       color: var(--text);
     }
 
     .book-writer {
       font-weight: 400;
-      font-size: 14px;
+      font-size: 16px;
       color: var(--accent);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .book-date {
-      font-size: 12px;
+      font-size: 14px;
       color: var(--muted);
       font-weight: 300;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .book-meta {
       display: grid;
       grid-template-columns: auto 1fr;
-      gap: 6px 16px;
-      font-size: 14px;
+      gap: 8px 20px;
+      font-size: 16px;
     }
 
     .meta-label {
       color: var(--muted);
       font-weight: 400;
       white-space: nowrap;
-      font-size: 13px;
+      font-size: 15px;
     }
 
     .meta-value {
@@ -205,27 +208,28 @@
     }
 
     .book-comment {
-      margin-top: 18px;
-      padding-top: 16px;
+      margin-top: 20px;
+      padding-top: 18px;
       border-top: 1px solid var(--border);
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 400;
       color: var(--text);
       line-height: 2;
     }
 
     .book-comment-label {
-      font-size: 13px;
+      font-size: 15px;
       color: var(--muted);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 500;
     }
 
     .no-data {
-      padding: 40px 0;
+      padding: 48px 0;
       text-align: center;
       color: var(--muted);
       font-weight: 300;
+      font-size: 16px;
     }
 
     /* ---- Pagination ---- */
@@ -233,25 +237,25 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 6px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 16px;
       flex-wrap: wrap;
     }
 
     .page-btn {
-      min-width: 36px;
-      height: 36px;
+      min-width: 40px;
+      height: 40px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: 1px solid var(--border);
       background: var(--surface);
       font-family: 'Noto Sans Myanmar', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       color: var(--muted);
       cursor: pointer;
       transition: all 0.2s;
-      padding: 0 10px;
+      padding: 0 12px;
     }
 
     .page-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -266,27 +270,28 @@
     .page-btn:disabled { opacity: 0.35; cursor: default; }
 
     .page-info {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--muted);
       text-align: center;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .status {
-      padding: 30px 0;
+      padding: 36px 0;
       color: var(--muted);
       font-weight: 300;
       text-align: center;
+      font-size: 16px;
     }
 
     .status.error { color: var(--accent); text-align: left; }
 
-    @media (max-width: 500px) {
-      body { padding: 28px 14px 48px; }
-      .book-card { padding: 20px 18px 18px; }
-      .header-left h1 { font-size: 1.25rem; }
-      .profile-pic-wrap { width: 50px; height: 50px; }
-      .profile-name { font-size: 12px; }
+    @media (max-width: 540px) {
+      body { padding: 32px 16px 56px; }
+      .book-card { padding: 24px 20px 22px; }
+      .header-left h1 { font-size: 1.45rem; }
+      .profile-pic-wrap { width: 56px; height: 56px; }
+      .profile-name { font-size: 13px; }
     }
   </style>
 </head>
@@ -329,17 +334,16 @@
     const PER_PAGE   = 5;
     const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
 
-    // Column indices
     const COL_EMAIL       = 1;
     const COL_BOOK        = 2;
     const COL_WRITER      = 3;
     const COL_TRANS_FROM  = 4;
     const COL_ORIG_BOOK   = 5;
     const COL_ORIG_WRITER = 6;
-    const COL_DATE        = 9;   // ဘယ်နေ့ကဖတ်ပြီးတာလဲ
+    const COL_DATE        = 9;
     const COL_COMMENT     = 10;
-    const COL_MONTH       = 11;  // Month column (backup)
-    const COL_YEAR        = 12;  // Year column (backup)
+    const COL_MONTH       = 11;
+    const COL_YEAR        = 12;
 
     const MONTHS_MY = [
       'ဇန်နဝါရီ',   'ဖေဖော်ဝါရီ', 'မတ်',
@@ -351,7 +355,6 @@
     const MONTH_EN = [
       'january','february','march','april','may','june',
       'july','august','september','october','november','december',
-      // abbreviations
       'jan','feb','mar','apr','may','jun',
       'jul','aug','sep','oct','nov','dec'
     ];
@@ -374,7 +377,6 @@
       if (searchPanel.classList.contains('open')) searchBook.focus();
     });
 
-    // ---- CSV Parser ----
     function parseCSV(text) {
       const rows = [];
       let row = [], cell = '', inQ = false;
@@ -400,62 +402,50 @@
       return rows;
     }
 
-    // ---- Month name to index (0-11) ----
     function monthIndex(name) {
       const n = name.toLowerCase().replace(/\./g, '');
       const idx = MONTH_EN.indexOf(n);
-      if (idx >= 0) return idx % 12; // handle abbreviations sharing same index
+      if (idx >= 0) return idx % 12;
       return -1;
     }
 
-    // ---- Robust date parser ----
     function parseDateStr(raw) {
       if (!raw) return null;
-      // Normalize: replace non-breaking spaces, trim
       const str = raw.replace(/[\s\u00A0]+/g, ' ').trim();
       if (!str) return null;
 
-      // Strip ordinals: "4th" → "4", "1st" → "1"
       const cleaned = str.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
 
-      // 1) "4 August 2026" or "04 Aug 2026"
+      // "4 August 2026"
       const dmy = cleaned.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
       if (dmy) {
         const m = monthIndex(dmy[2]);
         if (m >= 0) return { month: MONTHS_MY[m], year: parseInt(dmy[3], 10) };
       }
 
-      // 2) "August 4, 2026" or "Aug 4 2026"
+      // "August 4, 2026"
       const mdy = cleaned.match(/^([a-zA-Z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
       if (mdy) {
         const m = monthIndex(mdy[1]);
         if (m >= 0) return { month: MONTHS_MY[m], year: parseInt(mdy[3], 10) };
       }
 
-      // 3) Slash/dash format: "8/4/2026" or "08-04-2026"
-      //    Google Sheets published CSV often uses MM/DD/YYYY
+      // "8/4/2026" — Google Sheets CSV exports dates as MM/DD/YYYY
       const slash = cleaned.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
       if (slash) {
         const a = parseInt(slash[1], 10);
         const b = parseInt(slash[2], 10);
         const year = parseInt(slash[3], 10);
-        // If first number > 12, it must be DD/MM/YYYY
-        if (a > 12 && b >= 1 && b <= 12) {
-          return { month: MONTHS_MY[b - 1], year };
-        }
-        // Otherwise assume MM/DD/YYYY (Google Sheets default)
-        if (a >= 1 && a <= 12) {
-          return { month: MONTHS_MY[a - 1], year };
-        }
+        // If first > 12 it's DD/MM, otherwise MM/DD
+        if (a > 12 && b >= 1 && b <= 12) return { month: MONTHS_MY[b - 1], year };
+        if (a >= 1 && a <= 12) return { month: MONTHS_MY[a - 1], year };
       }
 
-      // 4) ISO: "2026-08-04"
+      // ISO "2026-08-04"
       const iso = cleaned.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-      if (iso) {
-        return { month: MONTHS_MY[parseInt(iso[2], 10) - 1], year: parseInt(iso[1], 10) };
-      }
+      if (iso) return { month: MONTHS_MY[parseInt(iso[2], 10) - 1], year: parseInt(iso[1], 10) };
 
-      // 5) Last resort: Date constructor
+      // Fallback
       const d = new Date(cleaned);
       if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
         return { month: MONTHS_MY[d.getMonth()], year: d.getFullYear() };
@@ -464,45 +454,26 @@
       return null;
     }
 
-    // ---- Get date from row ----
     function getDate(r) {
-      // PRIMARY: try the explicit Month + Year columns
+      // Primary: explicit Month + Year columns
       let m = (r[COL_MONTH] || '').trim();
       let y = (r[COL_YEAR]  || '').trim();
-
-      // Parse month — could be "August", "Aug", "8", or Myanmar
       let monthIdx = -1;
       let yearNum = 0;
 
       if (m) {
-        // Try as English month name
         monthIdx = monthIndex(m);
-        // Try as number
-        if (monthIdx < 0) {
-          const n = parseInt(m, 10);
-          if (n >= 1 && n <= 12) monthIdx = n - 1;
-        }
-        // Try as Myanmar month name
-        if (monthIdx < 0) {
-          const myIdx = MONTHS_MY.indexOf(m);
-          if (myIdx >= 0) monthIdx = myIdx;
-        }
+        if (monthIdx < 0) { const n = parseInt(m, 10); if (n >= 1 && n <= 12) monthIdx = n - 1; }
+        if (monthIdx < 0) { const myIdx = MONTHS_MY.indexOf(m); if (myIdx >= 0) monthIdx = myIdx; }
       }
-      if (y) {
-        yearNum = parseInt(y, 10);
-        if (isNaN(yearNum)) yearNum = 0;
-      }
+      if (y) { yearNum = parseInt(y, 10); if (isNaN(yearNum)) yearNum = 0; }
 
-      // If we got both month and year from explicit columns, use them
-      if (monthIdx >= 0 && yearNum > 2000) {
-        return { month: MONTHS_MY[monthIdx], year: yearNum };
-      }
+      if (monthIdx >= 0 && yearNum > 2000) return { month: MONTHS_MY[monthIdx], year: yearNum };
 
-      // FALLBACK: parse the date column
+      // Fallback: parse date column
       return parseDateStr(r[COL_DATE]);
     }
 
-    // ---- Load ----
     async function loadData() {
       try {
         const res  = await fetch(CSV_URL);
@@ -515,12 +486,12 @@
           return;
         }
 
-        // Debug: log raw date values so you can see what the CSV actually returns
-        console.log('--- Raw date samples from CSV ---');
+        // Debug: see raw date values in console
+        console.log('--- Date samples ---');
         rows.slice(0, 8).forEach((r, i) => {
           const email = (r[COL_EMAIL] || '').trim();
           if (email.toLowerCase() === ONLY_EMAIL) {
-            console.log(`Row ${i}: dateCol="${r[COL_DATE] || ''}" | monthCol="${r[COL_MONTH] || ''}" | yearCol="${r[COL_YEAR] || ''}"`);
+            console.log(`Row ${i}: date="${r[COL_DATE] || ''}" | month="${r[COL_MONTH] || ''}" | year="${r[COL_YEAR] || ''}"`);
           }
         });
 
@@ -528,7 +499,6 @@
           const email = (r[COL_EMAIL] || '').trim().toLowerCase();
           const book  = (r[COL_BOOK]  || '').trim();
           if (email !== ONLY_EMAIL || !book) return null;
-
           const dt = getDate(r);
           return {
             book,
@@ -553,7 +523,6 @@
       }
     }
 
-    // ---- Render ----
     function render() {
       const total = filtered.length;
       const totalPages = Math.ceil(total / PER_PAGE);
@@ -606,7 +575,6 @@
       renderPagination(totalPages);
     }
 
-    // ---- Pagination ----
     function renderPagination(totalPages) {
       if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
       let h = '<div class="pagination">';
@@ -641,7 +609,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ---- Search ----
     function filterBooks() {
       const bq = searchBook.value.trim().toLowerCase();
       const wq = searchWriter.value.trim().toLowerCase();
