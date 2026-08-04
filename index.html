@@ -3,62 +3,587 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What I Share - Book Notes</title>
+  <title>ဖတ်ဖူးတဲ့ စာအုပ်များ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --bg: #f6f3ed;
+      --surface: #ffffff;
+      --accent: #b5442b;
+      --text: #2b2520;
+      --muted: #9a9088;
+      --border: #e2ddd5;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f6f8fa;
-      color: #24292e;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans Myanmar', sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+      min-height: 100vh;
+      padding: 48px 20px 60px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ---- Header ---- */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header-left h1 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 2px;
+    }
+
+    .header-left .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 300;
+    }
+
+    .header-right {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      gap: 6px;
+      flex-shrink: 0;
     }
-    header {
-      text-align: center;
-      margin-bottom: 20px;
+
+    .profile-pic-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      padding: 2.5px;
+      background: linear-gradient(135deg, var(--accent) 0%, #e0976e 100%);
     }
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-    }
-    p {
-      color: #586069;
-      font-size: 0.95rem;
-    }
-    .sheet-wrapper {
-      width: 100%;
-      max-width: 1100px;
-      height: 82vh;
-      background: #ffffff;
-      border: 1px solid #e1e4e8;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-    }
-    iframe {
+
+    .profile-pic {
       width: 100%;
       height: 100%;
-      border: 0;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid var(--bg);
+      display: block;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ---- Search ---- */
+    .search-toggle {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      margin-bottom: 16px;
+      border-bottom: 1px dashed var(--muted);
+      line-height: 1.4;
+      transition: color 0.2s;
+      user-select: none;
+    }
+
+    .search-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+    .search-panel {
+      display: none;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .search-panel.open { display: flex; }
+
+    .search-field { flex: 1; min-width: 160px; }
+
+    .search-field input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: 'Noto Sans Myanmar', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-field input::placeholder { color: var(--muted); font-weight: 300; }
+    .search-field input:focus { border-color: var(--accent); }
+
+    .clear-btn {
+      padding: 9px 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: 'Noto Sans Myanmar', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .result-info {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ---- Book Cards ---- */
+    .book-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    .book-card:nth-child(1) { animation-delay: 0.00s; }
+    .book-card:nth-child(2) { animation-delay: 0.06s; }
+    .book-card:nth-child(3) { animation-delay: 0.12s; }
+    .book-card:nth-child(4) { animation-delay: 0.18s; }
+    .book-card:nth-child(5) { animation-delay: 0.24s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .book-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .book-writer {
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .book-date {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 16px;
+    }
+
+    .book-meta {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 16px;
+      font-size: 14px;
+    }
+
+    .meta-label {
+      color: var(--muted);
+      font-weight: 400;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .meta-value {
+      color: var(--text);
+      font-weight: 300;
+    }
+
+    .book-comment {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 2;
+    }
+
+    .book-comment-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .no-data {
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ---- Pagination ---- */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      min-width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: 'Noto Sans Myanmar', sans-serif;
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0 10px;
+    }
+
+    .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .page-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .page-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .page-info {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .status {
+      padding: 30px 0;
+      color: var(--muted);
+      font-weight: 300;
+      text-align: center;
+    }
+
+    .status.error { color: var(--accent); text-align: left; }
+
+    @media (max-width: 500px) {
+      body { padding: 28px 14px 48px; }
+      .book-card { padding: 20px 18px 18px; }
+      .header-left h1 { font-size: 1.25rem; }
+      .profile-pic-wrap { width: 50px; height: 50px; }
+      .profile-name { font-size: 12px; }
     }
   </style>
 </head>
 <body>
+  <div class="container">
 
-  <header>
-    <h1>📚 What I Share</h1>
-    <p>Reading notes and thoughts updated live from Google Sheets.</p>
-  </header>
+    <!-- Header: title left, pic + name right -->
+    <header>
+      <div class="header-left">
+        <h1>ဖတ်ဖူးတဲ့ စာအုပ်များ</h1>
+        <p class="subtitle">Google Sheet မှ တိုက်ရိုက် ယူထားသော စာအုပ်မှတ်တမ်း</p>
+      </div>
+      <div class="header-right">
+        <div class="profile-pic-wrap">
+          <img class="profile-pic" src="profile.png" alt="ဟိန်းထက်"
+               onerror="this.parentElement.style.display='none'">
+        </div>
+        <span class="profile-name">ဟိန်းထက်</span>
+      </div>
+    </header>
 
-  <div class="sheet-wrapper">
-    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pubhtml?gid=910367330&amp;single=true"></iframe>
+    <span class="search-toggle" id="searchToggle">🔍 ရှာရန်</span>
+
+    <div class="search-panel" id="searchPanel">
+      <div class="search-field">
+        <input type="text" id="searchBook" placeholder="စာအုပ်နာမည်">
+      </div>
+      <div class="search-field">
+        <input type="text" id="searchWriter" placeholder="စာရေးသူ">
+      </div>
+      <button class="clear-btn" id="clearBtn">ဖျက်</button>
+    </div>
+
+    <div class="result-info" id="resultInfo"></div>
+    <div id="output" class="status">ခဏစောင့်ပါ...</div>
+    <div id="pagination"></div>
   </div>
 
+  <script>
+    // ============================================================
+    //  CONFIG
+    // ============================================================
+    const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pub?gid=910367330&single=true&output=csv';
+    const PER_PAGE   = 5;
+    const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
+
+    const COL_EMAIL       = 1;
+    const COL_BOOK        = 2;
+    const COL_WRITER      = 3;
+    const COL_TRANS_FROM  = 4;
+    const COL_ORIG_BOOK   = 5;
+    const COL_ORIG_WRITER = 6;
+    const COL_DATE        = 9;
+    const COL_COMMENT     = 10;
+
+    const MONTHS_MY = [
+      'ဇန်နဝါရီ',   'ဖေဖော်ဝါရီ', 'မတ်',
+      'ဧပြီ',       'မေ',          'ဇွန်',
+      'ဇူလိုင်',    'ဩဂုတ်',       'စက်တင်ဘာ',
+      'အောက်တိုဘာ', 'နိုဝင်ဘာ',    'ဒီဇင်ဘာ'
+    ];
+
+    // ============================================================
+
+    let allBooks    = [];
+    let filtered    = [];
+    let currentPage = 1;
+
+    const output       = document.getElementById('output');
+    const paginationEl = document.getElementById('pagination');
+    const resultInfo   = document.getElementById('resultInfo');
+    const searchPanel  = document.getElementById('searchPanel');
+    const searchToggle = document.getElementById('searchToggle');
+    const searchBook   = document.getElementById('searchBook');
+    const searchWriter = document.getElementById('searchWriter');
+    const clearBtn     = document.getElementById('clearBtn');
+
+    searchToggle.addEventListener('click', () => {
+      searchPanel.classList.toggle('open');
+      if (searchPanel.classList.contains('open')) searchBook.focus();
+    });
+
+    // ---- CSV Parser ----
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], cell = '', inQ = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i], next = text[i + 1];
+        if (inQ) {
+          if (ch === '"' && next === '"') { cell += '"'; i++; }
+          else if (ch === '"') inQ = false;
+          else cell += ch;
+        } else {
+          if (ch === '"') inQ = true;
+          else if (ch === ',') { row.push(cell); cell = ''; }
+          else if (ch === '\n' || (ch === '\r' && next === '\n')) {
+            row.push(cell); cell = '';
+            if (row.some(c => c !== '')) rows.push(row);
+            row = [];
+            if (ch === '\r') i++;
+          } else cell += ch;
+        }
+      }
+      row.push(cell);
+      if (row.some(c => c !== '')) rows.push(row);
+      return rows;
+    }
+
+    // ---- Date parser: "DD Month YYYY" format ----
+    function parseDateStr(raw) {
+      if (!raw) return null;
+      const str = raw.trim();
+      if (!str) return null;
+
+      // Strip ordinals: "4th" → "4", "1st" → "1", "2nd" → "2", "3rd" → "3"
+      const cleaned = str.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
+
+      // Match: "4 August 2026" or "04 August 2026"
+      const monthNames = [
+        'january','february','march','april','may','june',
+        'july','august','september','october','november','december'
+      ];
+
+      const match = cleaned.match(/^(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})$/);
+      if (match) {
+        const month = monthNames.indexOf(match[2].toLowerCase());
+        const year  = parseInt(match[3], 10);
+        if (month >= 0) return { month: MONTHS_MY[month], year };
+      }
+
+      // Fallback
+      const d = new Date(cleaned);
+      if (!isNaN(d.getTime())) {
+        return { month: MONTHS_MY[d.getMonth()], year: d.getFullYear() };
+      }
+
+      return null;
+    }
+
+    // ---- Load ----
+    async function loadData() {
+      try {
+        const res  = await fetch(CSV_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const rows = parseCSV(text).slice(1);
+
+        if (!rows.length) {
+          output.innerHTML = '<p class="no-data">ဒေတာ မရှိသေးပါ</p>';
+          return;
+        }
+
+        allBooks = rows.map(r => {
+          const email = (r[COL_EMAIL] || '').trim().toLowerCase();
+          const book  = (r[COL_BOOK]  || '').trim();
+          if (email !== ONLY_EMAIL || !book) return null;
+          const dt = parseDateStr(r[COL_DATE]);
+          return {
+            book,
+            writer:     (r[COL_WRITER]      || '').trim(),
+            transFrom:  (r[COL_TRANS_FROM]  || '').trim(),
+            origBook:   (r[COL_ORIG_BOOK]   || '').trim(),
+            origWriter: (r[COL_ORIG_WRITER] || '').trim(),
+            comment:    (r[COL_COMMENT]     || '').trim(),
+            month: dt ? dt.month : '',
+            year:  dt ? dt.year  : '',
+          };
+        }).filter(Boolean).reverse();
+
+        filtered = [...allBooks];
+        currentPage = 1;
+        render();
+
+      } catch (err) {
+        output.className = 'status error';
+        output.innerHTML = 'ဒေတာ ခေါ်မရပါ။ Sheet ကို Publish လုပ်ထားပြီးဖြစ်ကြောင်း စစ်ပါ။'
+          + `<br><small style="opacity:0.6">${esc(err.message)}</small>`;
+      }
+    }
+
+    // ---- Render ----
+    function render() {
+      const total = filtered.length;
+      const totalPages = Math.ceil(total / PER_PAGE);
+      if (currentPage > totalPages) currentPage = totalPages || 1;
+
+      const page = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+      if (!total) {
+        output.innerHTML = '<p class="no-data">ကိုက်ညီသော စာအုပ် မတွေ့ပါ</p>';
+        paginationEl.innerHTML = '';
+        resultInfo.textContent = '';
+        return;
+      }
+
+      resultInfo.textContent = (searchBook.value || searchWriter.value)
+        ? `တွေ့ရှိသည် — ${total} အုပ်`
+        : `စုစုပေါင်း ${total} အုပ်`;
+
+      let html = '';
+      page.forEach((b, i) => {
+        html += `<div class="book-card" style="animation-delay:${i * 0.06}s">`;
+        html += `<div class="book-title">${esc(b.book)}</div>`;
+        html += `<div class="book-writer">${esc(b.writer)}</div>`;
+
+        if (b.month || b.year) {
+          html += `<div class="book-date">${[b.month, b.year].filter(Boolean).join(' ')}</div>`;
+        }
+
+        const meta = [];
+        if (b.transFrom)  meta.push(['ဘာသာပြန်', b.transFrom]);
+        if (b.origBook)   meta.push(['မူရင်းစာအုပ်', b.origBook]);
+        if (b.origWriter) meta.push(['မူရင်းစာရေးသူ', b.origWriter]);
+        if (meta.length) {
+          html += '<div class="book-meta">';
+          meta.forEach(([l, v]) => {
+            html += `<span class="meta-label">${esc(l)}</span><span class="meta-value">${esc(v)}</span>`;
+          });
+          html += '</div>';
+        }
+
+        if (b.comment) {
+          html += '<div class="book-comment">'
+            + '<div class="book-comment-label">စာအုပ်ဖတ်ပြီးတွေးမိတာ</div>'
+            + esc(b.comment) + '</div>';
+        }
+        html += '</div>';
+      });
+
+      output.innerHTML = html;
+      renderPagination(totalPages);
+    }
+
+    // ---- Pagination ----
+    function renderPagination(totalPages) {
+      if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+      let h = '<div class="pagination">';
+      h += pBtn('←', currentPage - 1, currentPage === 1);
+      getPages(currentPage, totalPages).forEach(p => {
+        h += p === '...'
+          ? '<span style="color:var(--muted);padding:0 4px">…</span>'
+          : `<button class="page-btn${p === currentPage ? ' active' : ''}" onclick="goPage(${p})">${p}</button>`;
+      });
+      h += pBtn('→', currentPage + 1, currentPage === totalPages);
+      h += `</div><div class="page-info">စာမျက်နှာ ${currentPage} / ${totalPages}</div>`;
+      paginationEl.innerHTML = h;
+    }
+
+    function pBtn(l, p, d) {
+      return `<button class="page-btn" onclick="goPage(${p})" ${d ? 'disabled' : ''}>${l}</button>`;
+    }
+
+    function getPages(c, t) {
+      if (t <= 7) return Array.from({ length: t }, (_, i) => i + 1);
+      const p = [1];
+      if (c > 3) p.push('...');
+      for (let i = Math.max(2, c - 1); i <= Math.min(t - 1, c + 1); i++) p.push(i);
+      if (c < t - 2) p.push('...');
+      p.push(t);
+      return p;
+    }
+
+    function goPage(n) {
+      currentPage = n;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---- Search ----
+    function filterBooks() {
+      const bq = searchBook.value.trim().toLowerCase();
+      const wq = searchWriter.value.trim().toLowerCase();
+      filtered = allBooks.filter(b =>
+        (!bq || b.book.toLowerCase().includes(bq)) &&
+        (!wq || b.writer.toLowerCase().includes(wq)));
+      currentPage = 1;
+      render();
+    }
+
+    searchBook.addEventListener('input', filterBooks);
+    searchWriter.addEventListener('input', filterBooks);
+    clearBtn.addEventListener('click', () => {
+      searchBook.value = '';
+      searchWriter.value = '';
+      filterBooks();
+    });
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
