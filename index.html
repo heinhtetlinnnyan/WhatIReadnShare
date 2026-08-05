@@ -38,7 +38,7 @@
     --shell:  #e7e3d9;
 
     --content:    1240px;   /* width of the whole reading area */
-    --col-margin: 8rem;     /* left gutter holding the date */
+    --col-margin: 8rem;     /* left gutter holding the cover and date */
     --gap:        2.2rem;
   }
 
@@ -199,6 +199,25 @@
     border-bottom: 1px solid var(--rule);
   }
 
+  .gutter { display: flex; flex-direction: column; gap: 0.7rem; }
+
+  .cover {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--shell);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .cover.on { opacity: 1; }
+
+  /* no cover found — collapse the slot rather than leave a grey box */
+  .cover.none { display: none; }
+
+  .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
   .when { font-size: 0.83rem; color: var(--muted); line-height: 2.1; padding-top: 0.2rem; }
 
   .title { font-size: 1.22rem; line-height: 1.7; margin-bottom: 0.13rem; font-weight: 400; }
@@ -252,12 +271,15 @@
     header { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
     h1 { font-size: 1.4rem; }
     .entry { grid-template-columns: 1fr; gap: 0.4rem; padding: 1.9rem 0; }
+    .gutter { flex-direction: row; align-items: center; gap: 0.9rem; }
+    .cover { width: 3.4rem; flex-shrink: 0; }
     .when { padding-top: 0; }
     .years { gap: 0.95rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
+    .cover { opacity: 1; }
   }
 </style>
 </head>
@@ -298,8 +320,9 @@
 <script>
   /* ---------- settings ---------- */
   const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGqSeOBUkUNLG0seN_cGPtDp9ldSvKasKVdeDCCliwHwVZQWLRQMtRgbOOtJLUFeZZ9dNiS49GlTKK/pub?gid=910367330&single=true&output=csv';
-  const PER_PAGE   = 5;
+  const PER_PAGE   = 10;
   const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
+  const SHOW_COVERS = true;   // set false to turn the whole cover feature off
 
   const PROFILE_SOURCES = ['profile.png'];
 
@@ -323,11 +346,9 @@
     try {
       const CONS = '\\u1000-\\u102A\\u103F\\u104E';   // consonants + independent vowels
       const SIGN = '\\u102B-\\u1038\\u103B-\\u103E';  // medials, vowel signs, tone marks
-      // a consonant starts a syllable unless it follows a virama (stacked)
-      // or carries an asat (making it the coda of the syllable before it)
       return new RegExp(`(?<!\\u1039)([${CONS}])(?![${SIGN}]*[\\u103A\\u1039])`, 'g');
     } catch (e) {
-      return null; // very old browser without lookbehind — leave text as is
+      return null;
     }
   })();
 
@@ -336,8 +357,91 @@
     return s.replace(MY_BREAK_RE, '\u200B$1');
   }
 
-  // escape after inserting the break marks, so entities never get split
   function txt(s) { return esc(myBreak(s)); }
+
+  /* ---------- book covers ----------
+     Burmese titles are almost never in these catalogues, so for translated
+     books we search the original title and author instead. Results (hits and
+     misses both) are cached in the browser so each book is only looked up once. */
+  const COVER_CACHE_KEY = 'covers:v1';
+  let coverCache = {};
+  try { coverCache = JSON.parse(localStorage.getItem(COVER_CACHE_KEY) || '{}'); } catch (e) {}
+
+  function saveCoverCache() {
+    try { localStorage.setItem(COVER_CACHE_KEY, JSON.stringify(coverCache)); } catch (e) {}
+  }
+
+  function coverQuery(b) {
+    if (b.origBook) return (b.origBook + ' ' + (b.origWriter || '')).trim();
+    // a Burmese-only title has nothing to search on
+    if (/[A-Za-z]/.test(b.book)) return (b.book + ' ' + (b.writer || '')).trim();
+    return null;
+  }
+
+  async function findCover(q) {
+    // 1 — Google Books
+    try {
+      const r = await fetch('https://www.googleapis.com/books/v1/volumes?maxResults=3&q='
+        + encodeURIComponent(q));
+      if (r.ok) {
+        const d = await r.json();
+        for (const item of (d.items || [])) {
+          const links = item.volumeInfo && item.volumeInfo.imageLinks;
+          const thumb = links && (links.thumbnail || links.smallThumbnail);
+          if (thumb) return thumb.replace(/^http:/, 'https:').replace(/&edge=curl/, '');
+        }
+      }
+    } catch (e) {}
+
+    // 2 — Open Library
+    try {
+      const r = await fetch('https://openlibrary.org/search.json?limit=3&fields=cover_i&q='
+        + encodeURIComponent(q));
+      if (r.ok) {
+        const d = await r.json();
+        const hit = (d.docs || []).find(x => x.cover_i);
+        if (hit) return 'https://covers.openlibrary.org/b/id/' + hit.cover_i + '-M.jpg';
+      }
+    } catch (e) {}
+
+    return null;
+  }
+
+  async function loadCovers(items) {
+    if (!SHOW_COVERS) return;
+    let dirty = false;
+
+    await Promise.all(items.map(async (b, i) => {
+      const slot = document.querySelector(`[data-cover="${i}"]`);
+      if (!slot) return;
+
+      const q = coverQuery(b);
+      if (!q) { slot.classList.add('none'); return; }
+
+      let url;
+      if (q in coverCache) {
+        url = coverCache[q];
+      } else {
+        url = await findCover(q);
+        coverCache[q] = url;
+        dirty = true;
+      }
+
+      // the page may have moved on while we were waiting
+      if (!document.body.contains(slot)) return;
+
+      if (!url) { slot.classList.add('none'); return; }
+
+      const img = new Image();
+      img.alt = b.book;
+      img.loading = 'lazy';
+      img.onload = () => { slot.appendChild(img); slot.classList.add('on'); };
+      img.onerror = () => slot.classList.add('none');
+      img.src = url;
+    }));
+
+    if (dirty) saveCoverCache();
+  }
 
   /* ---------- profile picture ---------- */
   (function () {
@@ -571,7 +675,7 @@
 
     const page = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
-    listEl.innerHTML = page.map(b => {
+    listEl.innerHTML = page.map((b, i) => {
       const when = b.year
         ? (b.mi >= 0 ? MONTHS_MY[b.mi] + ' ' + b.year : String(b.year))
         : '';
@@ -582,7 +686,10 @@
       if (b.origWriter) meta.push(['မူရင်းစာရေးသူ', b.origWriter]);
 
       return '<article class="entry">'
-        + `<div class="when">${txt(when)}</div>`
+        + '<div class="gutter">'
+        +   (SHOW_COVERS ? `<div class="cover" data-cover="${i}"></div>` : '')
+        +   `<div class="when">${txt(when)}</div>`
+        + '</div>'
         + '<div>'
         +   `<h2 class="title">${txt(b.book)}</h2>`
         +   (b.writer ? `<p class="writer">${txt(b.writer)}</p>` : '')
@@ -598,6 +705,7 @@
     }).join('');
 
     renderPages(totalPages);
+    loadCovers(page);
   }
 
   function renderPages(totalPages) {
