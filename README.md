@@ -1,6 +1,6 @@
 # What I read and write.
 I read some books.
-I listened to an interview that it is worth taking notes after reading. 
+I heard an author mention her habit of taking notes when she reads—and I loved the idea. 
 So, I feel like writing what I think after reading.
 
 I collect data from google form and glide app.
