@@ -34,8 +34,8 @@
     --accent: #55665f;
     --shell:  #e7e3d9;
 
-    --col-margin: 116px;
-    --gap: 28px;
+    --col-margin: 130px;
+    --gap: 32px;
   }
 
   :root[data-theme='dark'] {
@@ -60,11 +60,20 @@
     letter-spacing: 0.005em;
     padding: 84px 28px 120px;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  .container { max-width: 860px; margin: 0 auto; }
+  /* Myanmar line breaking: only break where we inserted a zero-width space,
+     never in the middle of a syllable cluster. */
+  body,
+  .title, .writer, .meta, .note, .subtitle, h1 {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+    hyphens: none;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; }
 
   /* ---------- header ---------- */
   header {
@@ -158,7 +167,7 @@
 
   .search.open { display: flex; }
 
-  .field { flex: 1 1 200px; }
+  .field { flex: 1 1 220px; }
 
   .field input {
     width: 100%;
@@ -254,18 +263,18 @@
   <header>
     <div>
       <h1>ဖတ်ဖူးတဲ့ စာအုပ်များ</h1>
-      <p class="subtitle">Google Sheet မှ တိုက်ရိုက် ယူထားသော စာအုပ်မှတ်တမ်း</p>
+      <p class="subtitle"></p>
     </div>
     <div class="who">
-      <span class="who-name">ဟိန်းထက်</span>
       <div class="avatar" id="avatar"><img id="avatarImg" alt="ဟိန်းထက်"></div>
+      <span class="who-name">ဟိန်းထက်</span>
     </div>
   </header>
 
   <div class="bar">
     <span class="count" id="count"></span>
     <div class="actions">
-      <button class="link" id="theme">အမှောင်</button>
+      <button class="link" id="theme">Dark</button>
       <button class="link" id="toggle">ရှာရန်</button>
     </div>
   </div>
@@ -288,10 +297,10 @@
   const PER_PAGE   = 5;
   const ONLY_EMAIL = 'mynameisheinhtet@gmail.com';
 
-  // tried in order; first one that loads wins
+  // tried in order; the first one that loads wins
   const PROFILE_SOURCES = [
-    'profile.png', './profile.png', 'Profile.png', 'profile.PNG',
-    'images/profile.png', 'assets/profile.png'
+    'profile.png', 'Profile.png', 'profile.PNG', 'profile.jpg', 'profile.jpeg',
+    'profile.webp', 'images/profile.png', 'assets/profile.png', 'img/profile.png'
   ];
 
   const COL_EMAIL = 1, COL_BOOK = 2, COL_WRITER = 3, COL_TRANS_FROM = 4,
@@ -306,13 +315,37 @@
                     'jan','feb','mar','apr','may','jun',
                     'jul','aug','sep','oct','nov','dec'];
 
+  /* ---------- Myanmar line breaking ----------
+     Chrome breaks Burmese at arbitrary points, which splits clusters like
+     မယ့် into မ / ယ့်. We mark real syllable starts with a zero-width space
+     and set word-break: keep-all, so the browser can only break where we say. */
+  const MY_BREAK_RE = (function () {
+    try {
+      const CONS = '\\u1000-\\u102A\\u103F\\u104E';   // consonants + independent vowels
+      const SIGN = '\\u102B-\\u1038\\u103B-\\u103E';  // medials, vowel signs, tone marks
+      // a consonant starts a syllable unless it follows a virama (stacked)
+      // or carries an asat (making it the coda of the syllable before it)
+      return new RegExp(`(?<!\\u1039)([${CONS}])(?![${SIGN}]*[\\u103A\\u1039])`, 'g');
+    } catch (e) {
+      return null; // very old browser without lookbehind — leave text as is
+    }
+  })();
+
+  function myBreak(s) {
+    if (!MY_BREAK_RE || !s) return s;
+    return s.replace(MY_BREAK_RE, '\u200B$1');
+  }
+
+  // escape after inserting the break marks, so entities never get split
+  function txt(s) { return esc(myBreak(s)); }
+
   /* ---------- profile picture ---------- */
   (function () {
     const box = document.getElementById('avatar');
     const img = document.getElementById('avatarImg');
     let i = 0;
     img.onerror = () => {
-      console.warn('profile image not found at:', img.getAttribute('src'));
+      console.warn('no profile image at:', img.getAttribute('src'));
       i++;
       if (i < PROFILE_SOURCES.length) img.src = PROFILE_SOURCES[i];
       else box.textContent = 'ဟ';
@@ -326,7 +359,7 @@
 
   function paintThemeLabel() {
     themeBtn.textContent =
-      document.documentElement.dataset.theme === 'dark' ? 'အလင်း' : 'အမှောင်';
+      document.documentElement.dataset.theme === 'dark' ? 'Light' : 'Dark';
   }
 
   themeBtn.addEventListener('click', () => {
@@ -386,7 +419,6 @@
     return idx >= 0 ? idx % 12 : -1;
   }
 
-  // returns { mi, day, year } — mi is 0-11, day may be 0 when unknown
   function parseDateStr(raw) {
     if (!raw) return null;
     const str = raw.replace(/[\s\u00A0]+/g, ' ').trim();
@@ -435,7 +467,6 @@
     if (y) yr = parseInt(y, 10) || 0;
 
     if (mi >= 0 && yr > 2000) {
-      // month/year columns win, but borrow the day from the raw date if it agrees
       const raw = parseDateStr(r[COL_DATE]);
       const day = (raw && raw.year === yr && raw.mi === mi) ? raw.day : 0;
       return { mi, day, year: yr };
@@ -496,7 +527,7 @@
     if (!years.length) { yearsEl.innerHTML = ''; return; }
 
     yearsEl.innerHTML =
-      `<button class="year on" data-year="all">အားလုံး</button>`
+      '<button class="year on" data-year="all">အားလုံး</button>'
       + years.map(y => `<button class="year" data-year="${y}">${y}</button>`).join('');
 
     yearsEl.querySelectorAll('.year').forEach(btn => {
@@ -551,17 +582,17 @@
       if (b.origWriter) meta.push(['မူရင်းစာရေးသူ', b.origWriter]);
 
       return '<article class="entry">'
-        + `<div class="when">${esc(when)}</div>`
+        + `<div class="when">${txt(when)}</div>`
         + '<div>'
-        +   `<h2 class="title">${esc(b.book)}</h2>`
-        +   (b.writer ? `<p class="writer">${esc(b.writer)}</p>` : '')
+        +   `<h2 class="title">${txt(b.book)}</h2>`
+        +   (b.writer ? `<p class="writer">${txt(b.writer)}</p>` : '')
         +   (meta.length
               ? '<div class="meta">' + meta.map(([l, v]) =>
-                  `<div><b>${esc(l)}</b><span>${esc(v)}</span></div>`).join('') + '</div>'
+                  `<div><b>${txt(l)}</b><span>${txt(v)}</span></div>`).join('') + '</div>'
               : '')
         +   (b.comment
               ? '<div class="note"><div class="note-label">စာအုပ်ဖတ်ပြီးတွေးမိတာ</div>'
-                + esc(b.comment) + '</div>'
+                + txt(b.comment) + '</div>'
               : '')
         + '</div></article>';
     }).join('');
